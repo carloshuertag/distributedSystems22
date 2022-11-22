@@ -29,14 +29,17 @@ public class RMIClient extends Thread {
         int i, j;
         if(remoteDistCalc != null) {
             try {
+		    System.out.println("Calculating C"+(start*SHARDS+1)+"..."+(end*SHARDS)+" remotely");
                 for (i = start; i < end; i++) for(j = 0; j < SHARDS; j++)
                         CShards[i][j] = remoteDistCalc.matrixMult(AShards[i], BtShards[j], shardSize, m);
             } catch (java.rmi.RemoteException e) {
                 e.printStackTrace();
             }
-        } else
+        } else {
+	        System.out.println("Calculating C1...12 locally");
             for(i = start; i < end; i++) for(j = 0; j < SHARDS; j++)
                     CShards[i][j] = Calc.matrixMult(AShards[i], BtShards[j], shardSize, m);
+        }
     }
 
     /**
@@ -53,14 +56,17 @@ public class RMIClient extends Thread {
             for (i = 0; i < n; i++) for (j = 0; j < m; j++) A[i][j] = 3 * i + 2 * j;
             for (i = 0; i < m; i++) for (j = 0; j < n; j++) B[i][j] = 2 * i - 3 * j;
             boolean display;
+	        System.out.println("Matrixes A & B initialized");
             if((display = n == 6 && m == 5)){
                 printMatrix(A, "A");
                 printMatrix(B, "B");
             }
             double[][] Bt = Calc.Transpose(B);
+	        System.out.println("Transpose matrix B");
             shardSize = n / SHARDS;
             AShards = new double[SHARDS][shardSize][m];
             BtShards = new double[SHARDS][shardSize][m];
+	        System.out.println("Matrix A & B sharded into A1...6 & BT1...6");
             for(i = 0; i < SHARDS; i++) {
                 AShards[i] = Calc.Group(A, i * shardSize, m, shardSize);
                 BtShards[i] = Calc.Group(Bt, i * shardSize, m, shardSize);
@@ -85,7 +91,8 @@ public class RMIClient extends Thread {
                 double[][] C = new double[n][n];
                 for(i = 0; i < SHARDS; i++) for(j = 0; j < SHARDS; j++)
                         Calc.Regroup(C, CShards[i][j], i * shardSize, j * shardSize, shardSize);
-                double checksum = 0.0d;
+                System.out.println("Regrouped matrix C from calculated shards C1...36");
+		        double checksum = 0.0d;
                 for(i = 0; i < n; i++) for(j = 0; j < n; j++)
                         checksum += C[i][j];
                 if (display) printMatrix(C, "C");

@@ -50,7 +50,7 @@ public class Calc {
     /**
      * Regroups matrix from shards
      * @param C matrix to be regrouped
-     * @param AB matrix of shards
+     * @param AB shard matrix
      * @param row start row in C
      * @param col start column in C
      * @param shardSize shard size
