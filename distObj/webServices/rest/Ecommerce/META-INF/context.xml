@@ -1,0 +1,7 @@
+<Context>
+	<Resource name="jdbc/datasource_Service" auth="Container" type="javax.sql.DataSource"
+		maxActive="100" maxIdle="30" maxWait="10000"
+		username="tomcat" password="javazzzjsgod"
+		driverClassName="com.mysql.cj.jdbc.Driver"
+		url="jdbc:mysql://localhost/ecommerce?serverTimezone=UTC"/>
+</Context>
